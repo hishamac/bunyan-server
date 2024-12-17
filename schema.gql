@@ -1,0 +1,1493 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Account {
+  activities: [AccountActivity!]
+  balance: Float
+  createdAt: DateTime
+  expenses: [Expense!]
+  id: Int!
+  incomes: [Income!]
+  mahallu: Mahallu
+  mahalluId: Int
+  name: String
+  updatedAt: DateTime
+}
+
+type AccountActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Account
+  targetId: Int
+}
+
+enum ActionEnum {
+  ADD_REMARKS
+  CLAIM
+  CREATE
+  DELETE
+  REJECT
+  UPDATE
+  VERIFY
+}
+
+type AuthResponse {
+  token: String
+  user: Credential
+}
+
+type Badge {
+  activities: [BadgeActivity!]
+  createdAt: DateTime
+  icon: String
+  id: Int!
+  name: String
+  updatedAt: DateTime
+  year: Year
+  yearId: Int
+}
+
+type BadgeActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Badge
+  targetId: Int
+}
+
+type Campaign {
+  active: Boolean
+  activities: [CampaignActivity!]
+  badge: Badge
+  badgeId: Int
+  createdAt: DateTime
+  description: String
+  id: Int!
+  tasks: [Task!]
+  title: String
+  updatedAt: DateTime
+  year: Year
+  yearId: Int
+}
+
+type CampaignActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Campaign
+  targetId: Int
+}
+
+type Category {
+  createdAt: DateTime
+  expenses: [Expense!]
+  id: Int!
+  incomes: [Income!]
+  mahallu: Mahallu
+  mahalluId: Int
+  name: String
+  type: CategoryTypeEnum
+  updatedAt: DateTime
+}
+
+enum CategoryTypeEnum {
+  EXPENSE
+  INCOME
+}
+
+type Charity {
+  active: Boolean
+  activities: [CharityActivity!]
+  admin: Boolean
+  createdAt: DateTime
+  description: String
+  donations: [Donation!]
+  expirationDate: DateTime
+  id: Int!
+  mahallu: Mahallu
+  mahalluId: Int
+  posterUrl: String
+  remarks: String
+  startingDate: DateTime
+  target: Int
+  title: String
+  updatedAt: DateTime
+  verified: Boolean
+}
+
+type CharityActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Charity
+  targetId: Int
+}
+
+input CreateAccountInput {
+  balance: Float! = 0
+  mahalluId: Int!
+  name: String!
+}
+
+input CreateBadgeInput {
+  icon: String!
+  name: String!
+  yearId: Int!
+}
+
+input CreateCampaignInput {
+  active: Boolean! = true
+  badgeId: Int!
+  description: String!
+  title: String!
+  yearId: Int!
+}
+
+input CreateCategoryInput {
+  mahalluId: Int!
+  name: String!
+  type: CategoryTypeEnum!
+}
+
+input CreateCharityInput {
+  active: Boolean! = true
+  admin: Boolean! = false
+  description: String!
+  expirationDate: DateTime!
+  mahalluId: Int
+  posterUrl: String!
+  remarks: String
+  startingDate: DateTime!
+  target: Int!
+  title: String!
+  verified: Boolean! = false
+}
+
+input CreateCredentialInput {
+  districtId: Int
+  mahalluId: Int
+  password: String!
+  role: RoleEnum!
+  username: String!
+  villageId: Int
+  zoneId: Int
+}
+
+input CreateDistrictInput {
+  name: String!
+}
+
+input CreateDonationInput {
+  amount: Int!
+  charityId: Int!
+  contact: String!
+  donatedAt: DateTime!
+  guest: Boolean!
+  mahalluId: Int!
+  memberId: Int
+  name: String!
+  status: DonationStatusEnum!
+}
+
+input CreateEventInput {
+  active: Boolean! = true
+  admin: Boolean! = false
+  description: String!
+  endingDate: DateTime!
+  location: String
+  mahalluId: Int
+  online: Boolean! = false
+  posterURL: String!
+  remarks: String
+  startingDate: DateTime!
+  title: String!
+  verified: Boolean! = false
+}
+
+input CreateExpenseInput {
+  accountId: Int!
+  amount: Float!
+  categoryId: Int!
+  date: DateTime!
+  description: String!
+  mahalluId: Int!
+  paidBy: String!
+}
+
+input CreateFamilyInput {
+  block: String!
+  houseHolder: String!
+  houseName: String!
+  houseNumber: String!
+  houseType: HouseTypeEnum!
+  mahalluId: Int!
+  mobile: String!
+  name: String!
+  panchayathMunicipality: String!
+  panchayathWardNo: String!
+  place: String!
+  rationCardType: RationCardTypeEnum!
+  wardHouseNo: String!
+  whatsapp: String!
+}
+
+input CreateIncomeInput {
+  accountId: Int!
+  amount: Float!
+  categoryId: Int!
+  date: DateTime!
+  description: String!
+  mahalluId: Int!
+  receivedBy: String!
+}
+
+input CreateJobInput {
+  active: Boolean! = true
+  admin: Boolean! = false
+  description: String!
+  employmentType: EmploymentTypeEnum!
+  expirationDate: DateTime!
+  location: String!
+  locationType: LocationTypeEnum!
+  mahalluId: Int
+  postedDate: DateTime! = "2024-12-07T10:12:53.239Z"
+  remarks: String
+  salaryRange: String!
+  skills: [String!]!
+  title: String!
+  verified: Boolean! = false
+}
+
+input CreateMahalluInput {
+  active: Boolean! = true
+  contact: Float!
+  name: String!
+  pinCode: Float!
+  place: String!
+  postOffice: String!
+  regNo: String!
+  villageId: Int!
+}
+
+input CreateMemberInput {
+  abroad: Boolean = false
+  abroadPlace: String
+  bloodGroup: String
+  contact: Int
+  familyId: Int
+  gender: GenderEnum!
+  generalQualification: String
+  healthCondition: String
+  islamicQualification: String
+  job: String
+  jobSector: String
+  maritalStatus: MarriageStatusEnum
+  name: String!
+  orphan: Boolean = false
+  regNo: String!
+  relationToHouseHolder: String
+  remarks: String
+  skills: [String!]
+  yearOfBirth: DateTime
+}
+
+input CreateNotificationInput {
+  active: Boolean! = true
+  buttonName: String
+  createdById: Int!
+  description: String!
+  fileURL: String
+  link: String
+  title: String!
+}
+
+input CreateOtherProgramInput {
+  categoryId: Int!
+  description: String!
+  files: [String!]!
+  mahalluId: Int!
+  points: Int!
+  remarks: String
+  title: String!
+}
+
+input CreateCommitteeInput {
+  mahalluId: Int!
+  memberId: Int!
+  position: String!
+}
+
+input CreatePostInput {
+  active: Boolean! = true
+  description: String!
+  fileURL: String!
+  mahalluId: Int!
+  title: String!
+}
+
+input CreatePostInteractionInput {
+  guest: Boolean!
+  mahalluId: Int
+  postId: Int!
+}
+
+input CreateTaskCategoryInput {
+  active: Boolean! = true
+  description: String!
+  title: String!
+  yearlyCleared: Boolean! = false
+}
+
+input CreateTaskInput {
+  active: Boolean! = true
+  badgeId: Int
+  campaignId: Int
+  categoryId: Int!
+  description: String!
+  dueDate: DateTime!
+  points: Int!
+  startDate: DateTime!
+  title: String!
+  verified: Boolean! = false
+  yearId: Int!
+  yearlyCleared: Boolean! = false
+}
+
+input CreateTaskParticipantInput {
+  description: String!
+  files: [String!]!
+  mahalluId: Int!
+  remarks: String
+  taskId: Int!
+  title: String!
+}
+
+input CreateVillageInput {
+  name: String!
+  zoneId: Int!
+}
+
+input CreateYearInput {
+  name: String!
+  type: YearTypeEnum!
+}
+
+input CreateZoneInput {
+  districtId: Int!
+  name: String!
+}
+
+type Credential {
+  accountActivities: [AccountActivity!]
+  badgeActivities: [BadgeActivity!]
+  campaignActivities: [CampaignActivity!]
+  charityActivities: [CharityActivity!]
+  createdAt: DateTime
+  district: District
+  districtActivities: [DistrictActivity!]
+  districtId: Int
+  donationActivities: [DonationActivity!]
+  eventActivities: [EventActivity!]
+  familyActivities: [FamilyActivity!]
+  id: Int!
+  jobActivities: [JobActivity!]
+  mahallu: Mahallu
+  mahalluActivities: [MahalluActivity!]
+  mahalluId: Int
+  memberActivities: [MemberActivity!]
+  notificationActivities: [NotificationActivity!]
+  otherProgramActivities: [OtherProgramActivity!]
+  password: String
+  committeeActivities: [CommitteeActivity!]
+  postActivities: [PostActivity!]
+  role: RoleEnum
+  taskActivities: [TaskActivity!]
+  taskCategoryActivities: [TaskCategoryActivity!]
+  taskParticipantActivities: [TaskParticipantActivity!]
+  updatedAt: DateTime
+  username: String
+  village: Village
+  villageActivities: [VillageActivity!]
+  villageId: Int
+  yearActivities: [YearActivity!]
+  zone: Zone
+  zoneActivities: [ZoneActivity!]
+  zoneId: Int
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type District {
+  activities: [DistrictActivity!]
+  createdAt: DateTime
+  credential: Credential
+  id: Int!
+  name: String
+  notifications: [Notification!]
+  updatedAt: DateTime
+  zones: [Zone!]
+}
+
+type DistrictActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: District
+  targetId: Int
+}
+
+type Donation {
+  activities: [DonationActivity!]
+  amount: Int
+  charity: Charity
+  charityId: Int
+  contact: String
+  createdAt: DateTime
+  donatedAt: DateTime
+  guest: Boolean
+  id: Int!
+  mahallu: Mahallu
+  mahalluId: Int
+  member: Member
+  memberId: Int
+  name: String
+  status: DonationStatusEnum
+  updatedAt: DateTime
+}
+
+type DonationActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Donation
+  targetId: Int
+}
+
+enum DonationStatusEnum {
+  FAILED
+  SUCCESS
+}
+
+enum EmploymentTypeEnum {
+  CONTRACT
+  FULL_TIME
+  INTERN
+  PART_TIME
+  TEMPORARY
+}
+
+type Event {
+  active: Boolean
+  activities: [EventActivity!]
+  admin: Boolean
+  createdAt: DateTime
+  description: String
+  endingDate: DateTime
+  id: Int!
+  location: String
+  mahallu: Mahallu
+  mahalluId: Int
+  online: Boolean
+  posterURL: String
+  remarks: String
+  startingDate: DateTime
+  title: String
+  updatedAt: DateTime
+  verified: Boolean
+}
+
+type EventActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Event
+  targetId: Int
+}
+
+type Expense {
+  account: Account
+  accountId: Int
+  amount: Float
+  category: Category
+  categoryId: Int
+  createdAt: DateTime
+  date: DateTime
+  description: String
+  id: Int!
+  mahallu: Mahallu
+  mahalluId: Int
+  paidBy: String
+  updatedAt: DateTime
+}
+
+type Family {
+  activities: [FamilyActivity!]
+  block: String
+  createdAt: DateTime
+  houseHolder: String
+  houseName: String
+  houseNumber: String
+  houseType: HouseTypeEnum
+  id: Int!
+  mahallu: Mahallu
+  mahalluId: Int
+  members: [Member!]
+  mobile: String
+  name: String
+  panchayathMunicipality: String
+  panchayathWardNo: String
+  place: String
+  rationCardType: RationCardTypeEnum
+  updatedAt: DateTime
+  wardHouseNo: String
+  whatsapp: String
+}
+
+type FamilyActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Family
+  targetId: Int
+}
+
+enum GenderEnum {
+  FEMALE
+  MALE
+  OTHER
+}
+
+enum HouseTypeEnum {
+  OWN
+  RENT
+}
+
+type Income {
+  account: Account
+  accountId: Int
+  amount: Float
+  category: Category
+  categoryId: Int
+  createdAt: DateTime
+  date: DateTime
+  description: String
+  id: Int!
+  mahallu: Mahallu
+  mahalluId: Int
+  receivedBy: String
+  updatedAt: DateTime
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+type Job {
+  active: Boolean
+  activities: [JobActivity!]
+  admin: Boolean
+  createdAt: DateTime
+  description: String
+  employmentType: EmploymentTypeEnum
+  expirationDate: DateTime
+  id: Int!
+  location: String
+  locationType: LocationTypeEnum
+  mahallu: Mahallu
+  mahalluId: Int
+  postedDate: DateTime!
+  remarks: String
+  salaryRange: String
+  skills: [String!]!
+  title: String
+  updatedAt: DateTime
+  verified: Boolean
+}
+
+type JobActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Job
+  targetId: Int
+}
+
+enum LocationTypeEnum {
+  HYBRID
+  ONSITE
+  REMOTE
+}
+
+type Mahallu {
+  accounts: [Account!]
+  active: Boolean
+  activities: [MahalluActivity!]
+  categories: [Category!]
+  charities: [Charity!]
+  contact: Float
+  createdAt: DateTime
+  credential: Credential
+  donations: [Donation!]
+  events: [Event!]
+  expenses: [Expense!]
+  families: [Family!]
+  id: Int!
+  incomes: [Income!]
+  jobs: [Job!]
+  name: String
+  notifications: [Notification!]
+  otherPrograms: [OtherProgram!]
+  committees: [Committee!]
+  pinCode: Float
+  place: String
+  postInteractions: [PostInteraction!]
+  postOffice: String
+  posts: [Post!]
+  regNo: String
+  taskParticipants: [TaskParticipant!]
+  updatedAt: DateTime
+  village: Village
+  villageId: Int
+}
+
+type MahalluActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Mahallu
+  targetId: Int
+}
+
+enum MarriageStatusEnum {
+  DIVORCED
+  MARRIED
+  SEPARATED
+  UNMARRIED
+  WIDOWED
+}
+
+type Member {
+  abroad: Boolean
+  abroadPlace: String
+  activities: [MemberActivity!]
+  bloodGroup: String
+  contact: Int
+  createdAt: DateTime
+  donations: [Donation!]
+  family: Family
+  familyId: Int
+  gender: GenderEnum
+  generalQualification: String
+  healthCondition: String
+  id: Int!
+  islamicQualification: String
+  job: String
+  jobSector: String
+  maritalStatus: MarriageStatusEnum
+  name: String
+  orphan: Boolean
+  committee: Committee
+  regNo: String
+  relationToHouseHolder: String
+  remarks: String
+  skills: [String!]
+  updatedAt: DateTime
+  yearOfBirth: DateTime
+}
+
+type MemberActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Member
+  targetId: Int
+}
+
+type Mutation {
+  activeOrInactiveCharity(value: Boolean!): Charity!
+  activeOrInactiveEvent(value: Boolean!): Event!
+  activeOrInactiveJob(value: Boolean!): Job!
+  activeOrInactivePost(value: Boolean!): Post!
+  activeOrInactiveTask(value: Boolean!): Task!
+  addRemarks(value: String!): Event!
+  createAccount(createAccountInput: CreateAccountInput!): Account!
+  createBadge(createBadgeInput: CreateBadgeInput!): Badge!
+  createCampaign(createCampaignInput: CreateCampaignInput!): Campaign!
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  createCharity(createCharityInput: CreateCharityInput!): Charity!
+  createCredential(createCredentialInput: CreateCredentialInput!): Credential!
+  createDistrict(createDistrictInput: CreateDistrictInput!): District!
+  createDonation(createDonationInput: CreateDonationInput!): Donation!
+  createEvent(createEventInput: CreateEventInput!): Event!
+  createExpense(createExpenseInput: CreateExpenseInput!): Expense!
+  createFamily(createFamilyInput: CreateFamilyInput!): Family!
+  createIncome(createIncomeInput: CreateIncomeInput!): Income!
+  createJob(createJobInput: CreateJobInput!): Job!
+  createMahallu(createMahalluInput: CreateMahalluInput!): Mahallu!
+  createMember(createMemberInput: CreateMemberInput!): Member!
+  createNotification(createNotificationInput: CreateNotificationInput!): Notification!
+  createOtherProgram(createOtherProgramInput: CreateOtherProgramInput!): OtherProgram!
+  createCommittee(createCommitteeInput: CreateCommitteeInput!): Committee!
+  createPost(createPostInput: CreatePostInput!): Post!
+  createPostInteraction(createPostInteractionInput: CreatePostInteractionInput!): PostInteraction!
+  createTask(createTaskInput: CreateTaskInput!): Task!
+  createTaskCategory(createTaskCategoryInput: CreateTaskCategoryInput!): TaskCategory!
+  createTaskParticipant(createTaskParticipantInput: CreateTaskParticipantInput!): TaskParticipant!
+  createVillage(createVillageInput: CreateVillageInput!): Village!
+  createYear(createYearInput: CreateYearInput!): Year!
+  createZone(createZoneInput: CreateZoneInput!): Zone!
+  login(password: String!, username: String!): AuthResponse!
+  logout: Boolean!
+  rejectJob(value: Boolean!): Job!
+  removeAccount(id: Int!): Account!
+  removeBadge(id: Int!): Badge!
+  removeCampaign(id: Int!): Campaign!
+  removeCategory(id: Int!): Category!
+  removeCharity(id: Int!): Charity!
+  removeCredential(id: Int!): Credential!
+  removeDistrict(id: Int!): District!
+  removeDonation(id: Int!): Donation!
+  removeEvent(id: Int!): Event!
+  removeExpense(id: Int!): Expense!
+  removeFamily(id: Int!): Family!
+  removeIncome(id: Int!): Income!
+  removeJob(id: Int!): Job!
+  removeMahallu(id: Int!): Mahallu!
+  removeMember(id: Int!): Member!
+  removeNotification(id: Int!): Notification!
+  removeOtherProgram(id: Int!): OtherProgram!
+  removeCommittee(id: Int!): Committee!
+  removePost(id: Int!): Post!
+  removePostInteraction(id: Int!): PostInteraction!
+  removeTask(id: Int!): Task!
+  removeTaskCategory(id: Int!): TaskCategory!
+  removeTaskParticipant(id: Int!): TaskParticipant!
+  removeVillage(id: Int!): Village!
+  removeYear(id: Int!): Year!
+  removeZone(id: Int!): Zone!
+  updateAccount(updateAccountInput: UpdateAccountInput!): Account!
+  updateBadge(updateBadgeInput: UpdateBadgeInput!): Badge!
+  updateCampaign(updateCampaignInput: UpdateCampaignInput!): Campaign!
+  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
+  updateCharity(updateCharityInput: UpdateCharityInput!): Charity!
+  updateCredential(updateCredentialInput: UpdateCredentialInput!): Credential!
+  updateDistrict(updateDistrictInput: UpdateDistrictInput!): District!
+  updateDonation(updateDonationInput: UpdateDonationInput!): Donation!
+  updateEvent(updateEventInput: UpdateEventInput!): Event!
+  updateExpense(updateExpenseInput: UpdateExpenseInput!): Expense!
+  updateFamily(updateFamilyInput: UpdateFamilyInput!): Family!
+  updateIncome(updateIncomeInput: UpdateIncomeInput!): Income!
+  updateJob(updateJobInput: UpdateJobInput!): Job!
+  updateMahallu(updateMahalluInput: UpdateMahalluInput!): Mahallu!
+  updateMember(updateMemberInput: UpdateMemberInput!): Member!
+  updateNotification(updateNotificationInput: UpdateNotificationInput!): Notification!
+  updateOtherProgram(updateOtherProgramInput: UpdateOtherProgramInput!): OtherProgram!
+  updateCommittee(updateCommitteeInput: UpdateCommitteeInput!): Committee!
+  updatePost(updatePostInput: UpdatePostInput!): Post!
+  updatePostInteraction(updatePostInteractionInput: UpdatePostInteractionInput!): PostInteraction!
+  updateTask(updateTaskInput: UpdateTaskInput!): Task!
+  updateTaskCategory(updateTaskCategoryInput: UpdateTaskCategoryInput!): TaskCategory!
+  updateTaskParticipant(updateTaskParticipantInput: UpdateTaskParticipantInput!): TaskParticipant!
+  updateVillage(updateVillageInput: UpdateVillageInput!): Village!
+  updateYear(updateYearInput: UpdateYearInput!): Year!
+  updateZone(updateZoneInput: UpdateZoneInput!): Zone!
+  verifyDistrict(value: Boolean!): District!
+  verifyEvent(value: Boolean!): Event!
+  verifyFamily(value: Boolean!): Family!
+  verifyJob(value: Boolean!): Job!
+  verifyMahallu(value: Boolean!): Mahallu!
+  verifyMember(value: Boolean!): Member!
+}
+
+type Notification {
+  active: Boolean
+  activities: [NotificationActivity!]
+  buttonName: String
+  createdAt: DateTime
+  createdBy: Credential
+  createdById: Int
+  description: String
+  districts: [District!]
+  fileURL: String
+  id: Int!
+  link: String
+  mahallus: [Mahallu!]
+  title: String
+  updatedAt: DateTime
+  villages: [Village!]
+  zones: [Zone!]
+}
+
+type NotificationActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Notification
+  targetId: Int
+}
+
+type OtherProgram {
+  activities: [OtherProgramActivity!]
+  category: TaskCategory
+  categoryId: Int
+  claimed: Boolean
+  createdAt: DateTime
+  description: String
+  files: [String!]
+  id: Int!
+  mahallu: Mahallu
+  mahalluId: Int
+  points: Int
+  remarks: String
+  title: String
+  updatedAt: DateTime
+  verified: Boolean
+}
+
+type OtherProgramActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: OtherProgram
+  targetId: Int
+}
+
+type Committee {
+  activities: [CommitteeActivity!]
+  createdAt: DateTime
+  id: Int!
+  mahallu: Mahallu
+  mahalluId: Int
+  member: Member
+  memberId: Int
+  position: String
+  updatedAt: DateTime
+}
+
+type CommitteeActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Committee
+  targetId: Int
+}
+
+type Post {
+  active: Boolean
+  activities: [PostActivity!]
+  createdAt: DateTime
+  description: String
+  fileURL: String
+  id: Int!
+  interactions: [PostInteraction!]
+  likes: Int
+  mahallu: Mahallu
+  mahalluId: Int
+  title: String
+  updatedAt: DateTime
+}
+
+type PostActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Post
+  targetId: Int
+}
+
+type PostInteraction {
+  createdAt: DateTime
+  guest: Boolean
+  id: Int!
+  mahallu: Mahallu
+  mahalluId: Int
+  post: Post
+  postId: Int
+}
+
+type Query {
+  account(id: Int!): Account!
+  accountActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [AccountActivity!]!
+  accounts(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Account!]!
+  badge(id: Int!): Badge!
+  badgeActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [BadgeActivity!]!
+  badges(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Badge!]!
+  campaign(id: Int!): Campaign!
+  campaignActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [CampaignActivity!]!
+  campaigns(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Campaign!]!
+  categories(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Category!]!
+  category(id: Int!): Category!
+  charities(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Charity!]!
+  charity(id: Int!): Charity!
+  charityActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [CharityActivity!]!
+  checkLoggedIn: AuthResponse!
+  countDistrict: Int!
+  credential(id: Int!): Credential!
+  credentials(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Credential!]!
+  district(id: Int!): District!
+  districtActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [DistrictActivity!]!
+  districts(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [District!]!
+  donation(id: Int!): Donation!
+  donationActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [DonationActivity!]!
+  donations(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Donation!]!
+  event(id: Int!): Event!
+  eventActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [EventActivity!]!
+  events(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Event!]!
+  expense(id: Int!): Expense!
+  expenses(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Expense!]!
+  families(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Family!]!
+  family(id: Int!): Family!
+  familyActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [FamilyActivity!]!
+  income(id: Int!): Income!
+  incomes(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Income!]!
+  job(id: Int!): Job!
+  jobActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [JobActivity!]!
+  jobs(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Job!]!
+  mahallu(id: Int!): Mahallu!
+  mahalluActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [MahalluActivity!]!
+  mahallus(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Mahallu!]!
+  member(id: Int!): Member!
+  memberActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [MemberActivity!]!
+  members(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Member!]!
+  notification(id: Int!): Notification!
+  notificationActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [NotificationActivity!]!
+  notifications(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Notification!]!
+  otherProgram(id: Int!): OtherProgram!
+  otherProgramActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [OtherProgramActivity!]!
+  otherPrograms(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [OtherProgram!]!
+  people(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Committee!]!
+  committee(id: Int!): Committee!
+  committeeActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [CommitteeActivity!]!
+  post(id: Int!): Post!
+  postActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [PostActivity!]!
+  postInteraction(id: Int!): PostInteraction!
+  postInteractions(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [PostInteraction!]!
+  posts(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Post!]!
+  task(id: Int!): Task!
+  taskActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [TaskActivity!]!
+  taskCategories(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [TaskCategory!]!
+  taskCategory(id: Int!): TaskCategory!
+  taskCategoryActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [TaskCategoryActivity!]!
+  taskParticipant(id: Int!): TaskParticipant!
+  taskParticipantActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [TaskParticipantActivity!]!
+  taskParticipants(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [TaskParticipant!]!
+  tasks(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Task!]!
+  village(id: Int!): Village!
+  villageActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [VillageActivity!]!
+  villages(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Village!]!
+  year(id: Int!): Year!
+  yearActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [YearActivity!]!
+  years(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Year!]!
+  zone(id: Int!): Zone!
+  zoneActivities(filters: JSON!, limit: Int!, offset: Int!, orderBy: JSON!, relationsToFilter: JSON!): [ZoneActivity!]!
+  zones(filters: JSON, limit: Int, offset: Int, orderBy: JSON, relationsToFilter: JSON): [Zone!]!
+}
+
+enum RationCardTypeEnum {
+  APL
+  BPL
+}
+
+enum RoleEnum {
+  DISTRICT_ADMIN
+  INFO_ADMIN
+  MAHALLU_ADMIN
+  SUPER_ADMIN
+  VILLAGE_ADMIN
+  ZONE_ADMIN
+}
+
+type Task {
+  active: Boolean
+  activities: [TaskActivity!]
+  badge: Badge
+  badgeId: Int
+  campaign: Campaign
+  campaignId: Int
+  category: TaskCategory
+  categoryId: Int
+  createdAt: DateTime
+  description: String
+  dueDate: DateTime
+  id: Int!
+  participants: [TaskParticipant!]
+  points: Int
+  startDate: DateTime
+  title: String
+  updatedAt: DateTime
+  verified: Boolean
+  year: Year
+  yearId: Int
+  yearlyCleared: Boolean
+}
+
+type TaskActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Task
+  targetId: Int
+}
+
+type TaskCategory {
+  active: Boolean
+  activities: [TaskCategoryActivity!]
+  createdAt: DateTime
+  description: String
+  id: Int!
+  otherPrograms: [OtherProgram!]
+  tasks: [Task!]
+  title: String
+  updatedAt: DateTime
+  yearlyCleared: Boolean
+}
+
+type TaskCategoryActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: TaskCategory
+  targetId: Int
+}
+
+type TaskParticipant {
+  activities: [TaskParticipantActivity!]
+  claimed: Boolean
+  createdAt: DateTime
+  description: String
+  files: [String!]!
+  id: Int!
+  mahallu: Mahallu
+  mahalluId: Int
+  remarks: String
+  task: Task
+  taskId: Int
+  title: String
+  updatedAt: DateTime
+  verified: Boolean
+}
+
+type TaskParticipantActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: TaskParticipant
+  targetId: Int
+}
+
+input UpdateAccountInput {
+  balance: Float = 0
+  id: Int!
+  mahalluId: Int
+  name: String
+}
+
+input UpdateBadgeInput {
+  icon: String
+  id: Int!
+  name: String
+  yearId: Int
+}
+
+input UpdateCampaignInput {
+  active: Boolean = true
+  badgeId: Int
+  description: String
+  id: Int!
+  title: String
+  yearId: Int
+}
+
+input UpdateCategoryInput {
+  id: Int!
+  mahalluId: Int
+  name: String
+  type: CategoryTypeEnum
+}
+
+input UpdateCharityInput {
+  active: Boolean = true
+  admin: Boolean = false
+  description: String
+  expirationDate: DateTime
+  id: Int!
+  mahalluId: Int
+  posterUrl: String
+  remarks: String
+  startingDate: DateTime
+  target: Int
+  title: String
+  verified: Boolean = false
+}
+
+input UpdateCredentialInput {
+  districtId: Int
+  id: Int!
+  mahalluId: Int
+  password: String
+  role: RoleEnum
+  username: String
+  villageId: Int
+  zoneId: Int
+}
+
+input UpdateDistrictInput {
+  id: Int!
+  name: String
+}
+
+input UpdateDonationInput {
+  amount: Int
+  charityId: Int
+  contact: String
+  donatedAt: DateTime
+  guest: Boolean
+  id: Int!
+  mahalluId: Int
+  memberId: Int
+  name: String
+  status: DonationStatusEnum
+}
+
+input UpdateEventInput {
+  active: Boolean = true
+  admin: Boolean = false
+  description: String
+  endingDate: DateTime
+  id: Int!
+  location: String
+  mahalluId: Int
+  online: Boolean = false
+  posterURL: String
+  remarks: String
+  startingDate: DateTime
+  title: String
+  verified: Boolean = false
+}
+
+input UpdateExpenseInput {
+  accountId: Int
+  amount: Float
+  categoryId: Int
+  date: DateTime
+  description: String
+  id: Int!
+  mahalluId: Int
+  paidBy: String
+}
+
+input UpdateFamilyInput {
+  block: String
+  houseHolder: String
+  houseName: String
+  houseNumber: String
+  houseType: HouseTypeEnum
+  id: Int!
+  mahalluId: Int
+  mobile: String
+  name: String
+  panchayathMunicipality: String
+  panchayathWardNo: String
+  place: String
+  rationCardType: RationCardTypeEnum
+  wardHouseNo: String
+  whatsapp: String
+}
+
+input UpdateIncomeInput {
+  accountId: Int
+  amount: Float
+  categoryId: Int
+  date: DateTime
+  description: String
+  id: Int!
+  mahalluId: Int
+  receivedBy: String
+}
+
+input UpdateJobInput {
+  active: Boolean = true
+  admin: Boolean = false
+  description: String
+  employmentType: EmploymentTypeEnum
+  expirationDate: DateTime
+  id: Int!
+  location: String
+  locationType: LocationTypeEnum
+  mahalluId: Int
+  postedDate: DateTime = "2024-12-07T10:12:53.239Z"
+  remarks: String
+  salaryRange: String
+  skills: [String!]
+  title: String
+  verified: Boolean = false
+}
+
+input UpdateMahalluInput {
+  active: Boolean = true
+  contact: Float
+  id: Int!
+  name: String
+  pinCode: Float
+  place: String
+  postOffice: String
+  regNo: String
+  villageId: Int
+}
+
+input UpdateMemberInput {
+  abroad: Boolean = false
+  abroadPlace: String
+  bloodGroup: String
+  contact: Int
+  familyId: Int
+  gender: GenderEnum
+  generalQualification: String
+  healthCondition: String
+  id: Int!
+  islamicQualification: String
+  job: String
+  jobSector: String
+  maritalStatus: MarriageStatusEnum
+  name: String
+  orphan: Boolean = false
+  regNo: String
+  relationToHouseHolder: String
+  remarks: String
+  skills: [String!]
+  yearOfBirth: DateTime
+}
+
+input UpdateNotificationInput {
+  active: Boolean = true
+  buttonName: String
+  createdById: Int
+  description: String
+  fileURL: String
+  id: Int!
+  link: String
+  title: String
+}
+
+input UpdateOtherProgramInput {
+  categoryId: Int
+  description: String
+  files: [String!]
+  id: Int!
+  mahalluId: Int
+  points: Int
+  remarks: String
+  title: String
+}
+
+input UpdateCommitteeInput {
+  id: Int!
+  mahalluId: Int
+  memberId: Int
+  position: String
+}
+
+input UpdatePostInput {
+  active: Boolean = true
+  description: String
+  fileURL: String
+  id: Int!
+  mahalluId: Int
+  title: String
+}
+
+input UpdatePostInteractionInput {
+  guest: Boolean
+  id: Int!
+  mahalluId: Int
+  postId: Int
+}
+
+input UpdateTaskCategoryInput {
+  active: Boolean = true
+  description: String
+  id: Int!
+  title: String
+  yearlyCleared: Boolean = false
+}
+
+input UpdateTaskInput {
+  active: Boolean = true
+  badgeId: Int
+  campaignId: Int
+  categoryId: Int
+  description: String
+  dueDate: DateTime
+  id: Int!
+  points: Int
+  startDate: DateTime
+  title: String
+  verified: Boolean = false
+  yearId: Int
+  yearlyCleared: Boolean = false
+}
+
+input UpdateTaskParticipantInput {
+  description: String
+  files: [String!]
+  id: Int!
+  mahalluId: Int
+  remarks: String
+  taskId: Int
+  title: String
+}
+
+input UpdateVillageInput {
+  id: Int!
+  name: String
+  zoneId: Int
+}
+
+input UpdateYearInput {
+  id: Int!
+  name: String
+  type: YearTypeEnum
+}
+
+input UpdateZoneInput {
+  districtId: Int
+  id: Int!
+  name: String
+}
+
+type Village {
+  activities: [VillageActivity!]
+  createdAt: DateTime
+  credential: Credential
+  id: Int!
+  mahallus: [Mahallu!]
+  name: String
+  notifications: [Notification!]
+  updatedAt: DateTime
+  zone: Zone
+  zoneId: Int
+}
+
+type VillageActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Village
+  targetId: Int
+}
+
+type Year {
+  activities: [YearActivity!]
+  badges: [Badge!]
+  campaigns: [Campaign!]
+  createdAt: DateTime
+  id: Int!
+  name: String
+  tasks: [Task!]
+  type: YearTypeEnum
+  updatedAt: DateTime
+}
+
+type YearActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Year
+  targetId: Int
+}
+
+enum YearTypeEnum {
+  ALL
+  CURRENT
+  PAST
+}
+
+type Zone {
+  activities: [ZoneActivity!]
+  createdAt: DateTime
+  credential: Credential
+  district: District
+  districtId: Int
+  id: Int!
+  name: String
+  notifications: [Notification!]
+  updatedAt: DateTime
+  villages: [Village!]
+}
+
+type ZoneActivity {
+  action: ActionEnum
+  actor: Credential
+  actorId: Int
+  createdAt: DateTime
+  data: String
+  id: Int!
+  target: Zone
+  targetId: Int
+}

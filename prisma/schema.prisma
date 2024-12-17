@@ -1,0 +1,852 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enum for interaction types
+enum InteractionEnum {
+  LIKE
+  VIEW
+}
+
+enum ActionEnum {
+  CREATE
+  UPDATE
+  DELETE
+  VERIFY
+  CLAIM
+  REJECT
+  ADD_REMARKS
+}
+
+enum EmploymentTypeEnum {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  TEMPORARY
+  INTERN
+}
+
+enum LocationTypeEnum {
+  ONSITE
+  REMOTE
+  HYBRID
+}
+
+enum Status {
+  PENDING
+  REVIEWED
+  APPROVED
+  REJECTED
+}
+
+enum DonationStatusEnum {
+  FAILED
+  SUCCESS
+}
+
+enum RationCardTypeEnum {
+  APL
+  BPL
+}
+
+enum HouseTypeEnum {
+  OWN
+  RENT
+}
+
+enum GenderEnum {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum MarriageStatusEnum {
+  MARRIED
+  UNMARRIED
+  DIVORCED
+  WIDOWED
+  SEPARATED
+}
+
+enum PermissionTypesEnum {
+  CREATE
+  READ
+  UPDATE
+  DELETE
+}
+
+enum CategoryTypeEnum {
+  INCOME
+  EXPENSE
+}
+
+enum RoleEnum {
+  SUPER_ADMIN
+  MAHALLU_ADMIN
+  VILLAGE_ADMIN
+  ZONE_ADMIN
+  DISTRICT_ADMIN
+  INFO_ADMIN
+  USER
+}
+
+enum YearTypeEnum {
+  CURRENT
+  PAST
+  ALL
+}
+
+model Mahallu {
+  id               Int               @id @default(autoincrement())
+  regNo            String
+  name             String
+  place            String
+  contact          String
+  pinCode          String
+  postOffice       String
+  totalPoints     Int               @default(0)
+  credential       Credential?
+  posts            Post[]
+  jobs             Job[]
+  charities        Charity[]
+  donations        Donation[]
+  activities       MahalluActivity[]
+  committees       Committee[]
+  accounts         Account[]
+  categories       Category[]
+  incomes          Income[]
+  expenses         Expense[]
+  families         Family[]
+  events           Event[]
+  taskParticipants TaskParticipant[]
+  otherPrograms    OtherProgram[]
+  postInteractions PostInteraction[]
+  badges          Badge[]           @relation("MahalluBadge")
+  villageId        Int?
+  village          Village?          @relation(fields: [villageId], references: [id], onDelete: Cascade)
+  createdBy        Credential?       @relation("MahalluCredential", fields: [createdById], references: [id], onDelete: Cascade)
+  createdById      Int?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model Post {
+  id           Int               @id @default(autoincrement())
+  title        String
+  description  String
+  fileURL      String
+  mahalluId    Int?
+  mahallu      Mahallu?          @relation(fields: [mahalluId], references: [id], onDelete: Cascade)
+  likes        Int?              @default(0)
+  active       Boolean           @default(true)
+  activities   PostActivity[]
+  interactions PostInteraction[]
+  createdBy    Credential?       @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById  Int?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+}
+
+model PostInteraction {
+  id        Int      @id @default(autoincrement())
+  postId    Int?
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  mahalluId Int?
+  mahallu   Mahallu? @relation(fields: [mahalluId], references: [id], onDelete: Cascade)
+  guest     Boolean
+  createdAt DateTime @default(now())
+}
+
+model Job {
+  id             Int                @id @default(autoincrement())
+  title          String
+  description    String
+  location       String?
+  employmentType EmploymentTypeEnum
+  locationType   LocationTypeEnum
+  salaryRange    String
+  mahalluId      Int?
+  mahallu        Mahallu?           @relation(fields: [mahalluId], references: [id], onDelete: Cascade)
+  skills         String[]
+  admin          Boolean            @default(false)
+  postedDate     DateTime           @default(now())
+  active         Boolean            @default(true)
+  expirationDate DateTime
+  remarks        String?
+  verified       Boolean            @default(false)
+  createdBy      Credential?        @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById    Int?
+  activities     JobActivity[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+}
+
+model Charity {
+  id             Int               @id @default(autoincrement())
+  posterUrl      String
+  title          String
+  description    String
+  mahalluId      Int?
+  mahallu        Mahallu?          @relation(fields: [mahalluId], references: [id], onDelete: Cascade)
+  admin          Boolean           @default(false)
+  startingDate   DateTime          @default(now())
+  active         Boolean           @default(true)
+  activities     CharityActivity[]
+  donations      Donation[]
+  verified       Boolean           @default(false)
+  target         Int
+  expirationDate DateTime          @default(now())
+  remarks        String?
+  createdBy      Credential?       @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById    Int?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+}
+
+model Donation {
+  id         Int                @id @default(autoincrement())
+  name       String
+  contact    String
+  guest      Boolean
+  memberId   Int?
+  member     Member?            @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  charityId  Int?
+  charity    Charity?           @relation(fields: [charityId], references: [id], onDelete: Cascade)
+  amount     Int
+  mahalluId  Int?
+  mahallu    Mahallu?           @relation(fields: [mahalluId], references: [id], onDelete: Cascade)
+  status     DonationStatusEnum
+  activities DonationActivity[]
+  donatedAt  DateTime
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+}
+
+model Family {
+  id                     Int                @id @default(autoincrement())
+  regNo                  String
+  name                   String
+  block                  String
+  houseNumber            String
+  houseHolder            String
+  houseName              String
+  mahalluId              Int?
+  mahallu                Mahallu?           @relation(fields: [mahalluId], references: [id], onDelete: Cascade)
+  place                  String
+  mobile                 String
+  whatsapp               String
+  houseType              HouseTypeEnum      // Assuming this is an enum you have defined
+  rationCardType         RationCardTypeEnum // Assuming this is an enum you have defined
+  panchayathMunicipality String
+  panchayathWardNo       String
+  wardHouseNo            String
+  activities             FamilyActivity[]   // Assuming this is a relation to the FamilyActivity model
+  members                Member[]           // Assuming this is a relation to the Member model
+  createdBy              Credential?        @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById            Int?
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+}
+
+
+model Member {
+  id                    Int                 @id @default(autoincrement())
+  regNo                 String              @default(uuid())
+  familyId              Int?
+  family                Family?             @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  contact               String?
+  name                  String
+  relationToHouseHolder String?
+  gender                GenderEnum
+  bloodGroup            String?
+  yearOfBirth           DateTime?
+  healthCondition       String?
+  maritalStatus         MarriageStatusEnum?
+  job                   String?
+  jobSector             String?
+  abroad                Boolean?            @default(false)
+  abroadPlace           String?
+  skills                String[]
+  orphan                Boolean?            @default(false)
+  islamicQualification  String?
+  generalQualification  String?
+  remarks               String?
+  activities            MemberActivity[]
+  committee             Committee?
+  donations             Donation[]
+  createdBy             Credential?         @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById           Int?
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+}
+
+model Credential {
+  id                        Int                       @id @default(autoincrement())
+  username                  String
+  password                  String
+  role                      RoleEnum
+  mahalluId                 Int?                      @unique
+  mahallu                   Mahallu?                  @relation(fields: [mahalluId], references: [id], onDelete: Cascade)
+  villageId                 Int?                      @unique
+  village                   Village?                  @relation(fields: [villageId], references: [id], onDelete: Cascade)
+  zoneId                    Int?                      @unique
+  zone                      Zone?                     @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  districtId                Int?                      @unique
+  district                  District?                 @relation(fields: [districtId], references: [id], onDelete: Cascade)
+  notifications             Notification[]
+  toNotifications           Notification[]            @relation("NotificationCredential")
+  mahalluActivities         MahalluActivity[]
+  postActivities            PostActivity[]
+  jobActivities             JobActivity[]
+  charityActivities         CharityActivity[]
+  familyActivities          FamilyActivity[]
+  memberActivities          MemberActivity[]
+  accountActivities         AccountActivity[]
+  committeeActivities       CommitteeActivity[]
+  eventActivities           EventActivity[]
+  campaignActivities        CampaignActivity[]
+  taskCategoryActivities    TaskCategoryActivity[]
+  taskActivities            TaskActivity[]
+  otherProgramActivities    OtherProgramActivity[]
+  yearActivities            YearActivity[]
+  badgeActivities           BadgeActivity[]
+  taskParticipantActivities TaskParticipantActivity[]
+  villageActivities         VillageActivity[]
+  zoneActivities            ZoneActivity[]
+  districtActivities        DistrictActivity[]
+  notificationActivities    NotificationActivity[]
+  donationActivities        DonationActivity[]
+  events                    Event[]
+  jobs                      Job[]
+  charities                 Charity[]
+  posts                     Post[]
+  families                  Family[]
+  members                   Member[]
+  committees                Committee[]
+  zones                     Zone[]                    @relation("ZoneCredential")
+  villages                  Village[]                 @relation("VillageCredential")
+  mahallus                  Mahallu[]                 @relation("MahalluCredential")
+  fatwas                    Fatwa[]
+  createdAt                 DateTime                  @default(now())
+  updatedAt                 DateTime                  @updatedAt
+}
+
+model Account {
+  id         Int               @id @default(autoincrement())
+  name       String
+  mahalluId  Int?
+  mahallu    Mahallu?          @relation(fields: [mahalluId], references: [id], onDelete: Cascade)
+  balance    Float
+  incomes    Income[]
+  expenses   Expense[]
+  activities AccountActivity[]
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+}
+
+model Category {
+  id        Int              @id @default(autoincrement())
+  name      String
+  mahalluId Int?
+  mahallu   Mahallu?         @relation(fields: [mahalluId], references: [id], onDelete: Cascade)
+  type      CategoryTypeEnum
+  incomes   Income[]
+  expenses  Expense[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model Income {
+  id          Int       @id @default(autoincrement())
+  date        DateTime
+  amount      Float
+  mahalluId   Int?
+  mahallu     Mahallu?  @relation(fields: [mahalluId], references: [id], onDelete: Cascade)
+  description String
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  receivedBy  String
+  accountId   Int?
+  account     Account?  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Expense {
+  id          Int       @id @default(autoincrement())
+  mahalluId   Int?
+  mahallu     Mahallu?  @relation(fields: [mahalluId], references: [id], onDelete: Cascade)
+  date        DateTime
+  amount      Float
+  description String
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  paidBy      String
+  accountId   Int?
+  account     Account?  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Committee {
+  id          Int                 @id @default(autoincrement())
+  memberId    Int                 @unique
+  member      Member?             @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  position    String
+  mahalluId   Int?
+  mahallu     Mahallu?            @relation(fields: [mahalluId], references: [id], onDelete: Cascade)
+  activities  CommitteeActivity[]
+  createBy    Credential?         @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById Int?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+}
+
+model Event {
+  id           Int             @id @default(autoincrement())
+  posterURL    String
+  title        String
+  description  String
+  online       Boolean         @default(false)
+  location     String?
+  mahalluId    Int?
+  mahallu      Mahallu?        @relation(fields: [mahalluId], references: [id], onDelete: Cascade)
+  admin        Boolean         @default(false)
+  startingDate DateTime
+  endingDate   DateTime
+  active       Boolean         @default(true)
+  remarks      String?
+  verified     Boolean         @default(false)
+  createdById  Int?
+  createdBy    Credential?     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  activities   EventActivity[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model Notification {
+  id          Int                    @id @default(autoincrement())
+  credentials Credential[]           @relation("NotificationCredential")
+  title       String
+  content     String?
+  viewedBy    Json? // JSON field to track who viewed
+  active      Boolean                @default(true)
+  createdById Int?
+  createdBy   Credential?            @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  activities  NotificationActivity[]
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+}
+
+model Campaign {
+  id          Int                @id @default(autoincrement())
+  title       String
+  tasks       Task[]
+  description String
+  active      Boolean            @default(true)
+  yearId      Int?
+  year        Year?              @relation(fields: [yearId], references: [id], onDelete: Cascade)
+  badge       Badge?             @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  badgeId     Int?
+  activities  CampaignActivity[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+}
+
+model TaskCategory {
+  id            Int                    @id @default(autoincrement())
+  title         String
+  color         String
+  tasks         Task[]
+  otherPrograms OtherProgram[]
+  description   String
+  active        Boolean                @default(true)
+  activities    TaskCategoryActivity[]
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+}
+
+model Task {
+  id           Int               @id @default(autoincrement())
+  title        String
+  description  String
+  categoryId   Int?
+  category     TaskCategory?     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  badgeId      Int?
+  badge        Badge?            @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  active       Boolean           @default(true)
+  campaignId   Int?
+  campaign     Campaign?         @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  yearId       Int?
+  year         Year?             @relation(fields: [yearId], references: [id], onDelete: Cascade)
+  verified     Boolean           @default(false)
+  points       Int?
+  icon         String?
+  participants TaskParticipant[]
+  activities   TaskActivity[]
+  startDate    DateTime
+  dueDate      DateTime
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+}
+
+model TaskParticipant {
+  id          Int                       @id @default(autoincrement())
+  taskId      Int?
+  task        Task?                     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  files       String[]
+  title       String
+  description String
+  mahalluId   Int?
+  mahallu     Mahallu?                  @relation(fields: [mahalluId], references: [id], onDelete: Cascade)
+  claimed     Boolean                   @default(false)
+  verified    Boolean                   @default(false)
+  remarks     String?
+  activities  TaskParticipantActivity[]
+  createdAt   DateTime                  @default(now())
+  updatedAt   DateTime                  @updatedAt
+}
+
+model OtherProgram {
+  id          Int                    @id @default(autoincrement())
+  files       String[]
+  categoryId  Int?
+  category    TaskCategory?          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  mahalluId   Int?
+  mahallu     Mahallu?               @relation(fields: [mahalluId], references: [id], onDelete: Cascade)
+  claimed     Boolean                @default(false)
+  verified    Boolean                @default(false)
+  points      Int?
+  remarks     String?
+  activities  OtherProgramActivity[]
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+}
+
+model Year {
+  id         Int            @id @default(autoincrement())
+  name       String
+  type       YearTypeEnum
+  tasks      Task[]
+  campaigns  Campaign[]
+  badges     Badge[]
+  activities YearActivity[]
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+}
+
+model Badge {
+  id         Int             @id @default(autoincrement())
+  name       String
+  icon       String
+  yearId     Int?
+  year       Year?           @relation(fields: [yearId], references: [id], onDelete: Cascade)
+  activities BadgeActivity[]
+  tasks      Task[]
+  mahallus   Mahallu[]       @relation("MahalluBadge")
+  campaigns  Campaign[]
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+}
+
+model Village {
+  id          Int               @id @default(autoincrement())
+  name        String
+  credential  Credential?
+  zoneId      Int?
+  zone        Zone?             @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  mahallus    Mahallu[]
+  activities  VillageActivity[]
+  createdBy   Credential?       @relation("VillageCredential", fields: [createdById], references: [id], onDelete: Cascade)
+  createdById Int?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+model Zone {
+  id          Int            @id @default(autoincrement())
+  name        String
+  credential  Credential?
+  villages    Village[]
+  districtId  Int?
+  district    District?      @relation(fields: [districtId], references: [id], onDelete: Cascade)
+  activities  ZoneActivity[]
+  createdBy   Credential?    @relation("ZoneCredential", fields: [createdById], references: [id], onDelete: Cascade)
+  createdById Int?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model District {
+  id         Int                @id @default(autoincrement())
+  name       String
+  credential Credential?
+  zones      Zone[]
+  activities DistrictActivity[]
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+}
+
+model MahalluActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Mahallu?    @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model PostActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Post?       @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model JobActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Job?        @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model CharityActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Charity?    @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model FamilyActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Family?     @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model MemberActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Member?     @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model AccountActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Account?    @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model CommitteeActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Committee?  @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model EventActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Event?      @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model CampaignActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Campaign?   @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model TaskCategoryActivity {
+  id        Int           @id @default(autoincrement())
+  targetId  Int?
+  target    TaskCategory? @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential?   @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now())
+}
+
+model TaskActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Task?       @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model OtherProgramActivity {
+  id        Int           @id @default(autoincrement())
+  targetId  Int?
+  target    OtherProgram? @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential?   @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now())
+}
+
+model YearActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Year?       @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model BadgeActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Badge?      @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model TaskParticipantActivity {
+  id        Int              @id @default(autoincrement())
+  targetId  Int?
+  target    TaskParticipant? @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential?      @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime         @default(now())
+}
+
+model VillageActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Village?    @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model ZoneActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Zone?       @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model DistrictActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    District?   @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+model NotificationActivity {
+  id        Int           @id @default(autoincrement())
+  targetId  Int?
+  target    Notification? @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential?   @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now())
+}
+
+model DonationActivity {
+  id        Int         @id @default(autoincrement())
+  targetId  Int?
+  target    Donation?   @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  action    ActionEnum
+  data      String
+  actorId   Int?
+  actor     Credential? @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+enum FatwaStatus {
+  PENDING
+  ANSWERED
+  REJECTED
+}
+
+
+model Fatwa {
+  id                Int       @id @default(autoincrement())
+  question          String
+  questionerMobile  String    // Optionally hash the mobile number
+  askedAt           DateTime  @default(now())
+  answer            String?   // Nullable if not answered yet
+  answeredById      Int?      // Nullable, references Scholar table
+  answeredBy        Credential?   @relation(fields: [answeredById], references: [id])
+  answeredAt        DateTime? // Nullable if not answered yet
+  status            FatwaStatus @default(PENDING) // Enum for status
+  createdAt         DateTime  @default(now())
+}

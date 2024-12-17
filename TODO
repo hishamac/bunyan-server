@@ -1,0 +1,35 @@
+import { create } from "domain"
+
+in resolver file
+
+    when findAll , findOne , add filter like this 
+
+    const authFilters = await this.buildAuthorizationFilter(user);
+
+when findOne 
+
+    // Throw error if record not found or unauthorized
+    if (!record) {
+        throw new ForbiddenException(`Access denied or record not found.`);
+      }
+
+when create 
+
+    //   set mahallu to the record if user is mahallu admin 
+    // set admin true if user is super admin
+
+when update 
+
+    // update only if user is super admin or mahallu admin
+    // super admin can update any record
+    // mahallu admin can update only his mahallu record
+
+when delete
+
+    // delete only if user is super admin or mahallu admin
+    // super admin can delete any record
+    // mahallu admin can delete only his mahallu record
+
+when count 
+
+    //   all can count
