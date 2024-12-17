@@ -1,6 +1,0 @@
--- AlterTable
-ALTER TABLE "Mahallu" ALTER COLUMN "contact" SET DATA TYPE TEXT,
-ALTER COLUMN "pinCode" SET DATA TYPE TEXT;
-
--- AlterTable
-ALTER TABLE "Member" ALTER COLUMN "contact" SET DATA TYPE TEXT;
